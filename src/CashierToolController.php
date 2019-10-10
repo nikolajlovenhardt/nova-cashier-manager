@@ -85,7 +85,7 @@ class CashierToolController extends Controller
         // Return data
         return [
             'user' => $billable->toArray(),
-            'cards' => (request('brief') || ! $billable->defaultCard()) ? [] : $this->formatCards($billable->cards(), $billable->defaultCard()->id),
+            'paymentMethods' => (request('brief') || ! $billable->defaultPaymentMethod()) ? [] : $this->formatPaymentMethods($billable->paymentMethods(), $billable->defaultPaymentMethod()->id),
             'invoices' => $invoices,
             'charges' => request('brief') ? [] : $this->formatCharges($billable->asStripeCustomer()->charges(), array_column($invoices, 'id')),
             'subscriptions' => $formattedSubscriptions,
@@ -219,24 +219,24 @@ class CashierToolController extends Controller
     }
 
     /**
-     * Format the cards collection.
+     * Format the paymentMethods collection.
      *
-     * @param  array $cards
-     * @param  null|int $defaultCardId
+     * @param  array $paymentMethods
+     * @param  null|int $defaultPaymentMethodId
      * @return array
      */
-    private function formatCards($cards, $defaultCardId = null)
+    private function formatPaymentMethods($paymentMethods, $defaultPaymentMethodId = null)
     {
-        return collect($cards)->map(function ($card) use ($defaultCardId) {
+        return collect($paymentMethods)->map(function ($paymentMethod) use ($defaultPaymentMethodId) {
             return [
-                'id' => $card->id,
-                'is_default' => $card->id == $defaultCardId,
-                'name' => $card->name,
-                'last4' => $card->last4,
-                'country' => $card->country,
-                'brand' => $card->brand,
-                'exp_month' => $card->exp_month,
-                'exp_year' => $card->exp_year,
+                'id' => $paymentMethod->id,
+                'is_default' => $paymentMethod->id == $defaultPaymentMethodId,
+                'name' => $paymentMethod->name ?? null,
+                'last4' => $paymentMethod->last4 ?? null,
+                'country' => $paymentMethod->country ?? null,
+                'brand' => $paymentMethod->brand ?? null,
+                'exp_month' => $paymentMethod->exp_month ?? null,
+                'exp_year' => $paymentMethod->exp_year ?? null,
             ];
         })->toArray();
     }

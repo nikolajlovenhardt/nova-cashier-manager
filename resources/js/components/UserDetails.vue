@@ -8,7 +8,7 @@
                 loading: true,
                 user: null,
                 subscription: null,
-                cards: [],
+                paymentMethods: [],
                 invoices: [],
                 charges: [],
                 plans: [],
@@ -31,7 +31,7 @@
                         .then(response => {
                             this.user = response.data.user;
                             this.subscription = response.data.subscriptions[0];
-                            this.cards = response.data.cards;
+                            this.paymentMethods = response.data.paymentMethods;
                             this.invoices = response.data.invoices;
                             this.charges = response.data.charges;
                             this.plans = response.data.plans;
@@ -262,10 +262,10 @@
             </div>
         </div>
 
-        <div class="card mb-6 relative" v-if="!loading && cards && cards.length">
+        <div class="card mb-6 relative" v-if="!loading && paymentMethods && paymentMethods.length">
             <div class="py-3 flex items-center border-b border-50">
                 <div class="px-3">
-                    Cards
+                    Payment methods
                 </div>
             </div> <!---->
             <div class="overflow-hidden overflow-x-auto relative">
@@ -278,10 +278,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="card in cards">
-                        <td><span class="whitespace-no-wrap text-left">{{card.brand}}</span></td>
-                        <td><span class="whitespace-no-wrap text-left">**********{{card.last4}}</span></td>
-                        <td><span class="whitespace-no-wrap text-left">{{card.exp_month}}/{{card.exp_year}}</span></td>
+                    <tr v-for="paymentMethod in paymentMethods">
+                        <td><span class="whitespace-no-wrap text-left">{{paymentMethod.brand}}</span></td>
+                        <td><span class="whitespace-no-wrap text-left">**********{{paymentMethod.last4}}</span></td>
+                        <td><span class="whitespace-no-wrap text-left">{{paymentMethod.exp_month}}/{{paymentMethod.exp_year}}</span></td>
                     </tr>
                     </tbody>
                 </table>
