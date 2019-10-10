@@ -82,12 +82,17 @@ class CashierToolController extends Controller
         // Get invoices
         $invoices = request('brief') ? [] : $this->formatInvoices($billable->invoicesIncludingPending(), array_column($subscriptions->toArray(), 'stripe_id'));
 
+        $charges = \Stripe\Charge::all([
+            'limit' => 50,
+            'customer' => $billable->asStripeCustomer()->id,
+        ]);
+
         // Return data
         return [
             'user' => $billable->toArray(),
             'paymentMethods' => (request('brief') || ! $billable->defaultPaymentMethod()) ? [] : $this->formatPaymentMethods($billable->paymentMethods(), $billable->defaultPaymentMethod()->id),
             'invoices' => $invoices,
-            'charges' => request('brief') ? [] : $this->formatCharges($billable->asStripeCustomer()->charges(), array_column($invoices, 'id')),
+            'charges' => request('brief') ? [] : $this->formatCharges($charges, array_column($invoices, 'id')),
             'subscriptions' => $formattedSubscriptions,
             'plans' => request('brief') ? [] : $this->formatPlans(Plan::all(['limit' => 100])),
         ];
